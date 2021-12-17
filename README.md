@@ -14,6 +14,8 @@
 - add [keyboard shortcuts](https://developer.chrome.com/docs/extensions/reference/commands/)
 - add a rating from different family members !!
 - hover over an epicurious link to view note or maybe in context menu
+- save changes as they're made to a buffer in memory - do this in `background.js`? save and wait a few seconds, then listen for `HTMLElement: input` event?
+  - commit the buffer to localstorage every so often, or when `HTMLElement: change` event fires
 ### Stretches 
 - perform database-ish operations on your recipe book
     - sort by

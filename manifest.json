@@ -2,5 +2,22 @@
   "name": "Epicurious Enhancement Suite",
   "description": "Adds various functionality to epicurious",
   "version": "1.0",
-  "manifest_version": 3
+  "manifest_version": 3,
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.epicurious.com/recipes/food/views/*"
+      ],
+      "run_at": "document_start",
+      "css": [
+        "recipe.css"
+      ],
+      "js": [
+        "recipe.js"
+      ]
+    }
+  ],
+  "permissions": [
+    "storage"
+  ]
 }
