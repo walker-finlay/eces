@@ -15,8 +15,9 @@ document.addEventListener('DOMContentLoaded', () => {
   // Can't add buttons till the dom is constructed obv
   console.log('DOM fully loaded and parsed');
   document.querySelectorAll(classnames).forEach(node => {
-    createNoteButton(node);
-    createNoteBox(node);
+    let nbtn = createNoteButton(node);
+    let nbox = createNoteBox(node);
+    attachNoteButtonClickHandler(nbtn, nbox);
   });
 });
 
@@ -69,9 +70,11 @@ function noteboxOnChange(e) {
 /**
  * Show the note box associated with the button
  */
-function noteButtonClickHandler(e) {
-  e.preventDefault();
-  console.log('clicked a note button');
+function attachNoteButtonClickHandler(btn, box) {
+  btn.onclick = e => {
+    e.preventDefault();
+    box.hidden = !box.hidden;
+  }
 }
 
 function noteDeleteHandler(e) { /* TODO: */ }
@@ -84,8 +87,10 @@ function noteEditHandler(e) { /* TODO: */ }
 function createHorizontal(reference_node) {
   let notebox = document.createElement('div');
   notebox.classList.add('nb-container__horizontal');
+  notebox.hidden = true;
   notebox.appendChild(createNoteBoxWrapper(notebox_options));
   reference_node.insertBefore(notebox, reference_node.firstChild.nextSibling);
+  return notebox;
 }
 /**
  * Create a note box
@@ -96,10 +101,10 @@ function createVertical(parent_node) { /* TODO: */ }
 function createNoteBox(node) {
   let p = node.parentNode.parentNode.parentNode;
   if (p.classList.contains(recipe_main_classname)) {
-    createHorizontal(p);
+    return createHorizontal(p);
   }
   else if (p.classList.contains(sticky_box_classname)) {
-    createVertical(p);
+    return createVertical(p);
   }
 }
 
@@ -143,6 +148,6 @@ function createNoteButton(node) {
   link.title = link.ariaLabel = "My Notes";
   link.innerHTML = note_svg.trim();
   link.firstChild.setAttribute('currentScale', 1.25);
-  link.onclick = noteButtonClickHandler;
   node.parentNode.insertBefore(tmp, node.nextSibling)
+  return tmp;
 }
