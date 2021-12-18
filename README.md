@@ -3,6 +3,10 @@
 # Epicurious Enhancement Suite (eces)
 *My xmas gift to mom 🎄*
 
+## Modules
+- [x] Recipe notes `notebox`
+- [ ] Recipe box operations (search, sort, group, etc) `recipeboxops`
+
 ## TODO
 ### Up next
 - make the built in sticky box actually work
