@@ -5,11 +5,19 @@ var [slug, ...preslug] = window.location.pathname.substring(1).split('/').revers
 console.log(`this is a recipe for ${slug}`);
 
 /* TODO:
+  - implement menu options
+    - include feedback button w auto margin
   - preload notes for recipe
-  - add an appropriately positioned and styled div next to each button
-  - add a note box wrapper inside each note div
-    - make them slide open in the correct way
-    - add `noteboxOnChange` to each
+    - by default:
+      - gray out the note box buttons
+      - hide the menu bar
+    - else:
+      - darken note box buttons
+      - show menu bar
+      - disable textarea 
+      - sync box
+  - add window resize handler to switch which box to sync
+  - fix the sticky box!!
 */
 document.addEventListener('DOMContentLoaded', () => {
   // Can't add buttons till the dom is constructed obv
@@ -40,7 +48,7 @@ const section_delimiter_color = `rgb(226, 221, 204)`;
 const classnames = '.social-icons__list-item--bookmarkactivated,'
   + ' .social-icons__list-item--bookmark';
 const recipe_main_classname = `recipe__main-content`;
-const sticky_box_classname = `stick-box__primary`;
+const sticky_box_classname = `sticky-box__primary`;
 const notebox_options = [
   {
     title: 'Edit note',
@@ -71,6 +79,7 @@ function noteboxOnChange(e) {
  * Show the note box associated with the button
  */
 function attachNoteButtonClickHandler(btn, box) {
+  if (typeof box == 'undefined') return;
   btn.onclick = e => {
     e.preventDefault();
     box.hidden = !box.hidden;
@@ -94,9 +103,16 @@ function createHorizontal(reference_node) {
 }
 /**
  * Create a note box
- * @param {Node} parent_node element which contains social list wrapper
+ * @param {Node} reference_node element which contains social list wrapper
  */
-function createVertical(parent_node) { /* TODO: */ }
+function createVertical(reference_node) {
+  let notebox = document.createElement('div');
+  notebox.classList.add('nb-container__vertical');
+  notebox.hidden = true;
+  notebox.appendChild(createNoteBoxWrapper(notebox_options));
+  reference_node.appendChild(notebox);
+  return notebox;
+}
 
 function createNoteBox(node) {
   let p = node.parentNode.parentNode.parentNode;
@@ -141,7 +157,6 @@ function createNoteButton(node) {
   // This is hacky but that's ok
   console.log('cloning button');
   let tmp = node.cloneNode(true);
-  tmp.style.position = "relative";
   let link = tmp.firstChild;
   delete link.dataset.eventClick;
   link.href = link.target = '';
