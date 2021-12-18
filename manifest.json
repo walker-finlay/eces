@@ -10,7 +10,7 @@
       ],
       "run_at": "document_start",
       "css": [
-        "recipe.css"
+        "notebox.css"
       ],
       "js": [
         "recipe.js"

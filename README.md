@@ -37,6 +37,7 @@
     3. Hovering over it will display the current note if there is one
 - Its color if unbookmarked is `rgb(201, 201, 201)`
 - Its marked color is `rgb(51, 51, 51)`  
+- section delimiters in epicurious have 2px solid rgb(226, 221, 204) 
 <br>
 ---  
 <br>

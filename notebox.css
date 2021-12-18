@@ -1,0 +1,15 @@
+.nb-conatiner {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+}
+.nb-menubar {
+    display: flex;
+    flex-basis: 40px;   /* width of epicurious social buttons */
+    flex-direction: column;
+}
+.nb-textarea {
+    flex-grow: 1;
+    border: none;
+}
