@@ -4,29 +4,27 @@ need the url of the window to check storage */
 var [slug, ...preslug] = window.location.pathname.substring(1).split('/').reverse();
 console.log(`this is a recipe for ${slug}`);
 
+var existing_note = undefined;
+var note_exists = false;
+
+chrome.storage.sync.get(slug)
+  .then(res => {
+    window.existing_note = res[slug];
+    window.note_exists = typeof window.existing_note !== 'undefined';
+  })
+  .catch(err => console.log(err));
+
 /* TODO:
-  - implement menu options
-    - include feedback button w auto margin
-  - preload notes for recipe
-    - by default:
-      - gray out the note box buttons
-      - hide the menu bar
-    - else:
-      - darken note box buttons
-      - show menu bar
-      - disable textarea 
-      - sync box
+  - include feedback button w auto margin
   - add window resize handler to switch which box to sync
   - fix the sticky box!!
 */
-document.addEventListener('DOMContentLoaded', async () => {
+document.addEventListener('DOMContentLoaded', () => {
   // Can't add buttons till the dom is constructed obv
   console.log('DOM fully loaded and parsed');
-  let storage_response = await chrome.storage.sync.get(slug);
-  let existing_note = storage_response[slug];
   document.querySelectorAll(classnames).forEach(node => {
-    let nbtn = createNoteButton(node, (typeof existing_note !== 'undefined'));
-    let nbox = createNoteBox(node, existing_note);
+    let nbtn = createNoteButton(node);
+    let nbox = createNoteBox(node);
     attachNoteButtonClickHandler(nbtn, nbox);
   });
 });
@@ -62,19 +60,20 @@ const notebox_options = [
     title: 'Delete note',
     classname: 'nb-delete',
     icon: delete_svg_filled,
-    clickhander: noteDeleteHandler
+    clickhandler: noteDeleteHandler
   }
 ];
 const viewport_rect = window.visualViewport;
 
+// TODO: make these DRY
 /**
  * Simply store the value of the box in sync when it loses focus
  */
 function noteboxOnChange(e) {
-  let data = { [slug]: e.target.value };
+  let data = { [window.slug]: e.target.value };
   chrome.storage.sync.set(data)
     .then(() => {
-      console.log('fufilled');
+      console.log('set fufilled');
       document.querySelectorAll('.nb-menubar').forEach(el => {
         el.hidden = false
       });
@@ -89,6 +88,36 @@ function noteboxOnChange(e) {
     .catch(err => console.log(err));
 };
 
+function noteDeleteHandler(e) {
+  /* TODO: prompt for confirmation with an emoji */
+  chrome.storage.sync.remove(slug)
+    .then(() => {
+      console.log('remove fulfilled');
+      document.querySelectorAll('.nb-menubar').forEach(el => {
+        el.hidden = true;
+      });
+      document.querySelectorAll('.nb-textarea').forEach(el => {
+        el.readOnly = false;
+        el.value = '';
+      });
+      document.querySelectorAll('.nb-button').forEach(el => {
+        el.classList.remove('nb-note-exists');
+      });
+    })
+    .catch(err => console.log(err));
+  e.currentTarget.parentNode.nextSibling.focus();
+
+  console.log(`${e} ${e.currentTarget.title} clicked`);
+}
+
+function noteEditHandler(e) {
+  let cur_textarea = e.currentTarget.parentNode.nextSibling;
+  cur_textarea.readOnly = false;
+  cur_textarea.focus();
+  cur_textarea.setSelectionRange(cur_textarea.value.length,
+    cur_textarea.value.length);
+}
+
 /**
  * Show the note box associated with the button
  */
@@ -97,16 +126,14 @@ function attachNoteButtonClickHandler(btn, box) {
   btn.onclick = e => {
     e.preventDefault();
     box.hidden = !box.hidden;
+    box.focus();
   }
 }
 
-function noteDeleteHandler(e) { /* TODO: */ }
-function noteEditHandler(e) { /* TODO: */ }
-
-function createNoteBox(node, existing_note) { // TODO: use existing note
+function createNoteBox(node) {
   let notebox = document.createElement('div');
   notebox.hidden = true;
-  notebox.appendChild(createNoteBoxWrapper(notebox_options, existing_note));
+  notebox.appendChild(createNoteBoxWrapper(notebox_options));
 
   let p = node.parentNode.parentNode.parentNode;
   if (p.classList.contains(recipe_main_classname)) {
@@ -127,19 +154,19 @@ function createNoteBox(node, existing_note) { // TODO: use existing note
  *   nb textarea}
  * @param {object} options includes id, icon, click handler
  */
-function createNoteBoxWrapper(options, existing_note) {
+function createNoteBoxWrapper(options) {
   let nb_wrapper = document.createElement('div');
   nb_wrapper.classList.add('nb-wrapper');
   let nb_menubar = nb_wrapper.appendChild(document.createElement('div'));
   nb_menubar.classList.add('nb-menubar');
   let nb_textarea = nb_wrapper.appendChild(document.createElement('textarea'));
-  if (typeof existing_note !== 'undefined') {
+  if (window.note_exists) {
     nb_textarea.readOnly = true;
-    nb_textarea.innerText = existing_note;
+    nb_textarea.innerText = window.existing_note;
   } else {
     nb_menubar.hidden = true;
   }
-  nb_textarea.placeholder = "Enter your note here!"
+  nb_textarea.placeholder = "Enter your note here! Click anywhere outside the note box to save!"
   nb_textarea.classList.add('nb-textarea');
   nb_textarea.onchange = noteboxOnChange;
   for (option of options) {
@@ -156,7 +183,7 @@ function createNoteBoxWrapper(options, existing_note) {
  * Duplicate the style and structure of the boookmark button and 
  * add note functionality
  */
-function createNoteButton(node, note_exists) {
+function createNoteButton(node) {
   // This is hacky but that's ok
   console.log('cloning button');
   let tmp = node.cloneNode(true);
@@ -165,7 +192,7 @@ function createNoteButton(node, note_exists) {
   link.href = link.target = '';
   link.title = link.ariaLabel = "My Notes";
   link.classList.add('nb-button');
-  if (note_exists) {
+  if (window.note_exists) {
     link.classList.add('nb-note-exists');
     link.innerHTML = note_svg_filled.trim();
   }
