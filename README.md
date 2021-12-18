@@ -1,3 +1,5 @@
+![eces logo please don't sue me](images/eces128.png "eces logo please don't sue me")
+
 # Epicurious Enhancement Suite (eces)
 *My xmas gift to mom*
 
