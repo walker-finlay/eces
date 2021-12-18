@@ -19,5 +19,11 @@
   ],
   "permissions": [
     "storage"
-  ]
+  ],
+  "icons": {
+    "16": "/images/eces16.png",
+    "32": "/images/eces32.png",
+    "48": "/images/eces48.png",
+    "128": "/images/eces128.png"
+  }
 }
