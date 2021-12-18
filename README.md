@@ -2,11 +2,6 @@
 *My xmas gift to mom*
 
 ## TODO
-### Absolute minimum
-- leave persistent, chrome synced notes on recipes
-    - use the [`chrome.storage`](https://developer.chrome.com/docs/extensions/reference/storage/) API kv store like `"recipe slug":"notes"`
-    - simply inject [content script](https://developer.chrome.com/docs/extensions/mv3/content_scripts/) with static declaration for now; no need for anything else until more features are implemented
-        - `"matches": ["https://*.epicurious.com/recipes/food/views/*"]`
 ### Would be cool
 - find a purpose for the [`action`](https://developer.chrome.com/docs/extensions/reference/action/) button
 - publish it to the Chrome store
