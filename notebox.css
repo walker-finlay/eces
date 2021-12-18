@@ -18,10 +18,21 @@
 .nb-textarea {
     flex-grow: 3;
     border: none;
+    max-width: 100%;
+    resize: none;
 }
 .nb-menubar-option {
+    color: white;
     cursor: pointer;
     width: 30px;
     height: 30px;
     margin: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.nb-menubar-option:hover {
+    border-radius: 30px;
+    background-color: rgb(235, 0, 0);
+    transition-duration: 0.2s;
 }
