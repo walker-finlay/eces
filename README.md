@@ -2,8 +2,16 @@
 *My xmas gift to mom*
 
 ## TODO
+### Up next
+- make the built in sticky box actually work
+### Refactoring
+- could be more DRY
 ### Would be cool
+- structured notes
 - find a purpose for the [`action`](https://developer.chrome.com/docs/extensions/reference/action/) button
+  - module selection
+  - feature requests
+    - have them sent to a repo somehow? maybe a folder in my inbox?
 - publish it to the Chrome store
 - find something to add to chrome [`contextMenus`](https://developer.chrome.com/docs/extensions/reference/contextMenus/)
 - add [keyboard shortcuts](https://developer.chrome.com/docs/extensions/reference/commands/)
@@ -21,21 +29,6 @@
 - Convert into a social media platform
     - add eces friends, message them, join groups, etc.  
 
----
-
-## Notes
-- Preload notes on page load
-    - Change the icon if they exist
-- The bookmark button is a `<li>` tag belonging to the class `social-icons__list-item--bookmarkactivated`, or `social-icons__list-item--bookmark`.
-    1. Get a list of nodes in this class
-    2. Add a sibling `<li>` tag which calls `chrome.storage` and pulls up a text box 
-    3. Hovering over it will display the current note if there is one
-- Its color if unbookmarked is `rgb(201, 201, 201)`
-- Its marked color is `rgb(51, 51, 51)`  
-- section delimiters in epicurious have 2px solid rgb(226, 221, 204) 
-<br>
----  
-<br>
 <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor" class="bi bi-card-text" viewBox="0 0 16 16">
   <path d="M14.5 3a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h13zm-13-1A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-13z"/>
   <path d="M3 5.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zM3 8a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9A.5.5 0 0 1 3 8zm0 2.5a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5z"/>
