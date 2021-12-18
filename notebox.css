@@ -9,7 +9,7 @@
     position: absolute;
     top: 0px;
     left: 56px;
-    /* border: 1px solid pink;  */
+    border-right: 2px solid rgb(226, 221, 204);
 }
 .nb-wrapper {
     width: 100%;

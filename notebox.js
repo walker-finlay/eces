@@ -2,7 +2,6 @@
 constructed or any other script is run. at this point we only
 need the url of the window to check storage */
 var [slug, ...preslug] = window.location.pathname.substring(1).split('/').reverse();
-console.log(`this is a recipe for ${slug}`);
 
 var existing_note = undefined;
 var note_exists = false;
@@ -21,7 +20,6 @@ chrome.storage.sync.get(slug)
 */
 document.addEventListener('DOMContentLoaded', () => {
   // Can't add buttons till the dom is constructed obv
-  console.log('DOM fully loaded and parsed');
   document.querySelectorAll(classnames).forEach(node => {
     let nbtn = createNoteButton(node);
     let nbox = createNoteBox(node);
@@ -185,7 +183,6 @@ function createNoteBoxWrapper(options) {
  */
 function createNoteButton(node) {
   // This is hacky but that's ok
-  console.log('cloning button');
   let tmp = node.cloneNode(true);
   let link = tmp.firstChild;
   delete link.dataset.eventClick;
@@ -200,6 +197,6 @@ function createNoteButton(node) {
     link.innerHTML = note_svg.trim();
   }
   link.firstChild.setAttribute('currentScale', 1.25);
-  node.parentNode.insertBefore(tmp, node.nextSibling)
+  node.parentNode.insertBefore(tmp, node.nextSibling);
   return tmp;
 }
