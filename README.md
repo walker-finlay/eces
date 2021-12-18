@@ -4,6 +4,7 @@
 ## TODO
 ### Up next
 - make the built in sticky box actually work
+- pack up the extension and install it on moms chrome acc
 ### Refactoring
 - could be more DRY
 ### Would be cool
