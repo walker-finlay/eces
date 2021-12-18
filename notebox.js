@@ -19,12 +19,14 @@ console.log(`this is a recipe for ${slug}`);
   - add window resize handler to switch which box to sync
   - fix the sticky box!!
 */
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   // Can't add buttons till the dom is constructed obv
   console.log('DOM fully loaded and parsed');
+  let storage_response = await chrome.storage.sync.get(slug);
+  let existing_note = storage_response[slug];
   document.querySelectorAll(classnames).forEach(node => {
-    let nbtn = createNoteButton(node);
-    let nbox = createNoteBox(node);
+    let nbtn = createNoteButton(node, (typeof existing_note !== 'undefined'));
+    let nbox = createNoteBox(node, existing_note);
     attachNoteButtonClickHandler(nbtn, nbox);
   });
 });
@@ -32,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
 const note_svg = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-sticky" viewBox="0 0 16 16">
   <path d="M2.5 1A1.5 1.5 0 0 0 1 2.5v11A1.5 1.5 0 0 0 2.5 15h6.086a1.5 1.5 0 0 0 1.06-.44l4.915-4.914A1.5 1.5 0 0 0 15 8.586V2.5A1.5 1.5 0 0 0 13.5 1h-11zM2 2.5a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 .5.5V8H9.5A1.5 1.5 0 0 0 8 9.5V14H2.5a.5.5 0 0 1-.5-.5v-11zm7 11.293V9.5a.5.5 0 0 1 .5-.5h4.293L9 13.793z"/>
 </svg>`;
-const note_svg_filled = `<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor" class="bi bi-sticky-fill" viewBox="0 0 16 16">
+const note_svg_filled = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-sticky-fill" viewBox="0 0 16 16">
   <path d="M2.5 1A1.5 1.5 0 0 0 1 2.5v11A1.5 1.5 0 0 0 2.5 15h6.086a1.5 1.5 0 0 0 1.06-.44l4.915-4.914A1.5 1.5 0 0 0 15 8.586V2.5A1.5 1.5 0 0 0 13.5 1h-11zm6 8.5a1 1 0 0 1 1-1h4.396a.25.25 0 0 1 .177.427l-5.146 5.146a.25.25 0 0 1-.427-.177V9.5z"/>
 </svg>`;
 const edit_svg = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
@@ -89,39 +91,21 @@ function attachNoteButtonClickHandler(btn, box) {
 function noteDeleteHandler(e) { /* TODO: */ }
 function noteEditHandler(e) { /* TODO: */ }
 
-/**
- * Create a note box which unfolds down from mid & small screen buttons
- * @param {Node} reference_node element which contains social list wrapper
- */
-function createHorizontal(reference_node) {
+function createNoteBox(node, existing_note) { // TODO: use existing note
   let notebox = document.createElement('div');
-  notebox.classList.add('nb-container__horizontal');
   notebox.hidden = true;
   notebox.appendChild(createNoteBoxWrapper(notebox_options));
-  reference_node.insertBefore(notebox, reference_node.firstChild.nextSibling);
-  return notebox;
-}
-/**
- * Create a note box
- * @param {Node} reference_node element which contains social list wrapper
- */
-function createVertical(reference_node) {
-  let notebox = document.createElement('div');
-  notebox.classList.add('nb-container__vertical');
-  notebox.hidden = true;
-  notebox.appendChild(createNoteBoxWrapper(notebox_options));
-  reference_node.appendChild(notebox);
-  return notebox;
-}
 
-function createNoteBox(node) {
   let p = node.parentNode.parentNode.parentNode;
   if (p.classList.contains(recipe_main_classname)) {
-    return createHorizontal(p);
+    notebox.classList.add('nb-container__horizontal');
+    p.insertBefore(notebox, p.firstChild.nextSibling);
   }
   else if (p.classList.contains(sticky_box_classname)) {
-    return createVertical(p);
+    notebox.classList.add('nb-container__vertical');
+    p.appendChild(notebox);
   }
+  return notebox;
 }
 
 /**
@@ -139,6 +123,7 @@ function createNoteBoxWrapper(options) {
   let nb_textarea = nb_wrapper.appendChild(document.createElement('textarea'));
   nb_textarea.placeholder = "Enter your note here!"
   nb_textarea.classList.add('nb-textarea');
+  nb_textarea.onchange = noteboxOnChange;
   for (option of options) {
     let tmp = nb_menubar.appendChild(document.createElement('div'))
     tmp.classList.add(option.classname, 'nb-menubar-option');
@@ -153,7 +138,7 @@ function createNoteBoxWrapper(options) {
  * Duplicate the style and structure of the boookmark button and 
  * add note functionality
  */
-function createNoteButton(node) {
+function createNoteButton(node, note_exists) {
   // This is hacky but that's ok
   console.log('cloning button');
   let tmp = node.cloneNode(true);
@@ -161,7 +146,13 @@ function createNoteButton(node) {
   delete link.dataset.eventClick;
   link.href = link.target = '';
   link.title = link.ariaLabel = "My Notes";
-  link.innerHTML = note_svg.trim();
+  if (note_exists) {
+    link.classList.toggle('nb-note-exists');
+    link.innerHTML = note_svg_filled.trim();
+  }
+  else {
+    link.innerHTML = note_svg.trim();
+  }
   link.firstChild.setAttribute('currentScale', 1.25);
   node.parentNode.insertBefore(tmp, node.nextSibling)
   return tmp;
