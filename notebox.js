@@ -73,7 +73,19 @@ const viewport_rect = window.visualViewport;
 function noteboxOnChange(e) {
   let data = { [slug]: e.target.value };
   chrome.storage.sync.set(data)
-    .then(console.log('fufilled'))
+    .then(() => {
+      console.log('fufilled');
+      document.querySelectorAll('.nb-menubar').forEach(el => {
+        el.hidden = false
+      });
+      document.querySelectorAll('.nb-textarea').forEach(el => {
+        el.readOnly = true;
+        el.innerText = e.target.value;
+      });
+      document.querySelectorAll('.nb-button').forEach(el => {
+        el.classList.add('nb-note-exists');
+      });
+    })
     .catch(err => console.log(err));
 };
 
@@ -94,7 +106,7 @@ function noteEditHandler(e) { /* TODO: */ }
 function createNoteBox(node, existing_note) { // TODO: use existing note
   let notebox = document.createElement('div');
   notebox.hidden = true;
-  notebox.appendChild(createNoteBoxWrapper(notebox_options));
+  notebox.appendChild(createNoteBoxWrapper(notebox_options, existing_note));
 
   let p = node.parentNode.parentNode.parentNode;
   if (p.classList.contains(recipe_main_classname)) {
@@ -115,12 +127,18 @@ function createNoteBox(node, existing_note) { // TODO: use existing note
  *   nb textarea}
  * @param {object} options includes id, icon, click handler
  */
-function createNoteBoxWrapper(options) {
+function createNoteBoxWrapper(options, existing_note) {
   let nb_wrapper = document.createElement('div');
   nb_wrapper.classList.add('nb-wrapper');
   let nb_menubar = nb_wrapper.appendChild(document.createElement('div'));
   nb_menubar.classList.add('nb-menubar');
   let nb_textarea = nb_wrapper.appendChild(document.createElement('textarea'));
+  if (typeof existing_note !== 'undefined') {
+    nb_textarea.readOnly = true;
+    nb_textarea.innerText = existing_note;
+  } else {
+    nb_menubar.hidden = true;
+  }
   nb_textarea.placeholder = "Enter your note here!"
   nb_textarea.classList.add('nb-textarea');
   nb_textarea.onchange = noteboxOnChange;
@@ -146,8 +164,9 @@ function createNoteButton(node, note_exists) {
   delete link.dataset.eventClick;
   link.href = link.target = '';
   link.title = link.ariaLabel = "My Notes";
+  link.classList.add('nb-button');
   if (note_exists) {
-    link.classList.toggle('nb-note-exists');
+    link.classList.add('nb-note-exists');
     link.innerHTML = note_svg_filled.trim();
   }
   else {
