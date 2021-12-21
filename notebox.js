@@ -78,7 +78,7 @@ function noteboxOnChange(e) {
       });
       document.querySelectorAll('.nb-textarea').forEach(el => {
         el.readOnly = true;
-        el.innerText = e.target.value;
+        el.value = e.target.value;
       });
       document.querySelectorAll('.nb-button').forEach(el => {
         el.classList.add('nb-note-exists');
@@ -159,7 +159,7 @@ function createNoteBoxWrapper(options) {
   let nb_textarea = nb_wrapper.appendChild(document.createElement('textarea'));
   if (window.note_exists) {
     nb_textarea.readOnly = true;
-    nb_textarea.innerText = window.existing_note;
+    nb_textarea.value = window.existing_note;
   } else {
     nb_menubar.hidden = true;
   }
