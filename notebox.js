@@ -47,6 +47,7 @@ const classnames = '.social-icons__list-item--bookmarkactivated,'
   + ' .social-icons__list-item--bookmark';
 const recipe_main_classname = `recipe__main-content`;
 const sticky_box_classname = `sticky-box__primary`;
+const note_placeholder = "Enter your note here! Click anywhere outside the note box to save!";
 const notebox_options = [
   {
     title: 'Edit note',
@@ -70,7 +71,7 @@ const viewport_rect = window.visualViewport;
 function noteboxOnChange(e) {
   let data = { [window.slug]: e.target.value };
   chrome.storage.sync.set(data)
-    .then(() => {
+    .then(() => { /* FIXME: maybe just keep a list of these to avoid walking the dom */
       console.log('set fufilled');
       document.querySelectorAll('.nb-menubar').forEach(el => {
         el.hidden = false
@@ -104,8 +105,6 @@ function noteDeleteHandler(e) {
     })
     .catch(err => console.log(err));
   e.currentTarget.parentNode.nextSibling.focus();
-
-  console.log(`${e} ${e.currentTarget.title} clicked`);
 }
 
 function noteEditHandler(e) {
@@ -164,7 +163,7 @@ function createNoteBoxWrapper(options) {
   } else {
     nb_menubar.hidden = true;
   }
-  nb_textarea.placeholder = "Enter your note here! Click anywhere outside the note box to save!"
+  nb_textarea.placeholder = note_placeholder;
   nb_textarea.classList.add('nb-textarea');
   nb_textarea.onchange = noteboxOnChange;
   for (option of options) {

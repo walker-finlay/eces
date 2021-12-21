@@ -15,6 +15,17 @@
       "js": [
         "notebox.js"
       ]
+    },
+    {
+      "matches": [
+        "https://www.epicurious.com/recipes/food/views/*"
+      ],
+      "js": [
+        "handyingredients.js"
+      ],
+      "css": [
+        "handyingredients.css"
+      ]
     }
   ],
   "permissions": [

@@ -1,0 +1,30 @@
+.split-view-button {
+  display: inline;
+  margin-left: 1ch;
+}
+.split-view-button:hover {
+  color: rgb(235, 0, 0);
+  transition-duration: 0.2s;
+  cursor: pointer;
+}
+.split-view-cancel {
+  display: inline;
+  margin-left: 1ch;
+}
+.split-view-cancel:hover {
+  cursor: pointer;
+}
+.handy-ingredients div {
+  row-gap: 0px;
+}
+.handy-ingredients h2 {
+  margin: 10px 0;
+  padding: 10px;
+}
+.handy-ingredients p {
+  margin: 10px 0;
+}
+.handy-ingredients {
+  position: sticky;
+  top: 56px;
+}
