@@ -5,7 +5,7 @@
 
 ## Modules
 - [x] Recipe notes `notebox`
-- [ ] Handy ingredients `handyingredients`
+- [x] Handy ingredients `handyingredients`
 - [ ] Recipe box operations (search, sort, group, etc) `recipeboxops`
 
 ## TODO
